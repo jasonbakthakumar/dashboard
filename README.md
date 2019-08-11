@@ -1,4 +1,4 @@
-#API SCHEMA
+## API SCHEMA
 
 This React Component recieves data from a REST API from an endpoint. The response from the API is stored in the component's state dashboard_data.
 
@@ -13,6 +13,7 @@ The parameters for the endpoint are:
 
 The schema of the response from the endpoint looks like this :
 
+`
 {
     listOfProjects : [
         {
@@ -53,11 +54,7 @@ The schema of the response from the endpoint looks like this :
             } //Returns null if no SSSP data is present
         }
     ]
-
-
-
-
-
+    
 
 }
-
+`
