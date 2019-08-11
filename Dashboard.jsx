@@ -271,7 +271,6 @@ class Dashboard extends React.Component {
   This returns the Line Chart Data - Method called from REACT Component
   */
   getLineChartData = (canvas) => {
-    //Try and keep working on getting that going
     let ctx = canvas.getContext("2d");
 
     let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
@@ -352,6 +351,7 @@ class Dashboard extends React.Component {
 
   //This method returns the number of people who read the broadcast
   getNumberOfPeopleWhoReadBroadcast = () => {
+    //Check if the network access and we can access data
     if (typeof this.state.dashboard_data.broadcastWidgetData !== 'undefined') {
       //Assigning for easier access
       let broadcastWidgetData = []
@@ -359,7 +359,7 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
-        //Returns the broadcsat with the highest number of people read if all projects are selected
+        //Returns the broadcast with the highest number of people read if all projects are selected
         let maximumValueInTheArray = broadcastWidgetData.reduce((max, entry) => Math.max(max, entry.broadcastData === null ? 0 : entry.broadcastData.numberOfPeopleRead), 0);
         return maximumValueInTheArray
       } else {
@@ -377,15 +377,16 @@ class Dashboard extends React.Component {
 
   }
 
-  
+  //Returns the broadcast with the highest number of read reciepts
   getTheHighestNumberReadForBroadcast = (broadcastList) => {
     return broadcastList.reduce((max, data) => max && (max.broadcastData === null ? 0 : max.broadcastData.numberOfPeopleRead) > (data.broadcastData === null ? 0 : data.broadcastData.numberOfPeopleRead) ? max : data, null)
   }
 
-  //Optimise the data
+  //This return the title of the latest broadcast
   getTheTitleOfBroadcast = () => {
-
+    //Check if network access complete and we have data
     if (typeof this.state.dashboard_data.broadcastWidgetData !== 'undefined') {
+      //Assign for easier access
       let broadcastWidgetData = []
       broadcastWidgetData = this.state.dashboard_data.broadcastWidgetData
       let projectSelected = this.state.projectSelected
@@ -398,8 +399,11 @@ class Dashboard extends React.Component {
         }
         return broadcastWithHighestRead.broadcastData.broadcastTitle
       } else {
-        //This is for a specific project :D
-        let broadcastWithHighestRead = this.getTheHighestNumberReadForBroadcast(broadcastWidgetData.filter(data => data.projectID === projectSelected))
+        //This is for a specific project - filter the data 
+        let broadcastWithHighestRead = this.getTheHighestNumberReadForBroadcast(
+          broadcastWidgetData
+          .filter(data => data.projectID === projectSelected)
+        )
         if (broadcastWithHighestRead.broadcastData === null) {
           return "No Broadcast found"
         }
@@ -410,6 +414,7 @@ class Dashboard extends React.Component {
   }
 
 
+  //This method returns the number of people who have read the latest SSSP
   getTheNumberOfPeopleWhoReadTheSSSP = () => {
     if (typeof this.state.dashboard_data.ssspWidgetData !== 'undefined') {
       let ssspWidgetData = []
@@ -420,6 +425,7 @@ class Dashboard extends React.Component {
         let maximumValueInTheArray = ssspWidgetData.reduce((max, entry) => Math.max(max, entry.ssspData === null ? 0 : entry.ssspData.numberOfPeopleRead), 0);
         return maximumValueInTheArray
       } else {
+        //Filter the data for the specific project
         let specificProjectData = ssspWidgetData.filter(function (entry) {
           return entry.projectID === projectSelected;
         });
@@ -430,10 +436,12 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //This method return the SSSP with the highest number of read
   getHighestNumberReadForSSSP = (ssspList) => {
     return ssspList.reduce((max, data) => max && (max.ssspData === null ? 0 : max.ssspData.numberOfPeopleRead) > (data.ssspData === null ? 0 : data.ssspData.numberOfPeopleRead) ? max : data, null)
   }
 
+  //This returns the NZ Date time format given a SQL Date Time string 
   getNZDateFromSQLTimeString = (string) => {
     let timeString = string.slice(0, 19).replace('T', ' ')
     let month = timeString.slice(0, 2)
@@ -441,8 +449,8 @@ class Dashboard extends React.Component {
     let year = timeString.slice(6, 10)
     return day + '-' + month + '-' + year
   }
-
-
+  
+  //This method return the last Modified Date for the latest SSSP
   getTheLastModifiedForLatestSSSP = () => {
     if (typeof this.state.dashboard_data.ssspWidgetData !== 'undefined') {
       let ssspWidgetData = []
@@ -450,6 +458,7 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
+        //If all projects are selected - return the SSSP with the highest number of read reciepts
         let ssspWithHighestRead = this.getHighestNumberReadForSSSP(ssspWidgetData)
         if (ssspWithHighestRead.ssspData === null) {
           //There is no document
@@ -457,7 +466,7 @@ class Dashboard extends React.Component {
         }
         return this.getNZDateFromSQLTimeString(ssspWithHighestRead.ssspData.lastModifiedOn)
       } else {
-        //This is for a specific project :D
+        //This is for a specific project - filter the data
         let ssspWithHighestRead = this.getHighestNumberReadForSSSP(ssspWidgetData.filter(data => data.projectID === projectSelected))
 
         if (ssspWithHighestRead.ssspData === null) {
@@ -469,6 +478,7 @@ class Dashboard extends React.Component {
     return "No SSSP Document Found"
   }
 
+  //This method return the total number of people on site today
   getTotalNumberOfPeopleOnSiteToday = () => {
     if (typeof this.state.dashboard_data.numberOfPeopleOnSiteData !== 'undefined') {
       let numberOfPeopleOnSiteData = []
@@ -488,6 +498,7 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //This method return the total number of people on site yesterday
   getTotalNumberOfPeopleOnSiteYesterday = () => {
     if (typeof this.state.dashboard_data.numberOfPeopleOnSiteData !== 'undefined') {
       let numberOfPeopleOnSiteData = []
@@ -495,7 +506,7 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
-        //Add up all the number of people on site today
+        //Add up all the number of people on site yesterday
         return numberOfPeopleOnSiteData.reduce((sum, entry) => sum + entry.yesterday, 0);
       } else {
         //This is for a specific project
@@ -506,7 +517,8 @@ class Dashboard extends React.Component {
     }
     return 0
   }
-
+  
+  //This method return the total number of subContractors
   getTotalNumberOfSubcontractors = () => {
     if (typeof this.state.dashboard_data.numberOfEntitiesData !== 'undefined') {
       let numberOfEntitiesData = []
@@ -517,7 +529,7 @@ class Dashboard extends React.Component {
         //Add All the subcontractors
         return numberOfEntitiesData.reduce((sum, entry) => sum + entry.entityData.numberOfSubcontractors, 0);
       } else {
-        //Just get the number of Subcontractors for that projects
+        //Just get the number of Subcontractors for a specific project
         let projectEntry = numberOfEntitiesData.filter(entry => entry.projectID === projectSelected);
         return projectEntry[0].entityData.numberOfSubcontractors
       }
@@ -526,6 +538,7 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //This returns the total number of consultants
   getTotalNumberOfConsultants = () => {
     if (typeof this.state.dashboard_data.numberOfEntitiesData !== 'undefined') {
       let numberOfEntitiesData = []
@@ -544,6 +557,7 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //This method returns the total number of clients
   getTotalNumberOfClients = () => {
     if (typeof this.state.dashboard_data.numberOfEntitiesData !== 'undefined') {
       let numberOfEntitiesData = []
@@ -562,6 +576,7 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //Returns the total number of companies
   getTotalNumberOfCompanies = () => {
     if (typeof this.state.dashboard_data.staffDistributionByCompany !== 'undefined') {
       let staffDistributionByCompany = []
@@ -571,10 +586,14 @@ class Dashboard extends React.Component {
       if (projectSelected === 'all') {
         return staffDistributionByCompany.length
       } else {
+        //This is for a specific project
         let numberOfCompaniesForProject = staffDistributionByCompany
+          //Map it to staff distribution for project
           .map(entry => entry.staffDistributionByProject
+            //Filter the entries with projectID as projectSelected and number Of staff is atleast 1
             .filter(subEntry => subEntry.projectID === projectSelected && subEntry.numberOfStaff > 0)
           )
+          //Make the two dimensional array into a single one
           .reduce((prev, next) => prev.concat(next))
           .length
         return numberOfCompaniesForProject
@@ -583,12 +602,13 @@ class Dashboard extends React.Component {
     return 0
   }
 
+  //This returns the placeholder for doughnut data
   getPlaceHolderDoughnutData = () => {
     return {
       labels: ["Company A", "Company B", "Company C"],
       datasets: [
         {
-          label: "Email",
+          label: "Placeholder data",
           pointRadius: 0,
           pointHoverRadius: 0,
           backgroundColor: ["#ff8779", "#2a84e9", "#e2e2e2"],
@@ -599,6 +619,7 @@ class Dashboard extends React.Component {
     };
   }
 
+  //Generate a random color array
   generateRandomColorArray = (number) => {
     //Showing the existing brandColors
     let preDeterminedColorArray = ['#ff7b00', '#bbbbbb', '#2a84e9', '#d83a3a', '#ffac42', '#ec407a', '#ab47bc', '#673ab7', '#3949ab', '#fbc02d']
@@ -618,6 +639,7 @@ class Dashboard extends React.Component {
     return preDeterminedColorArray.concat(colorArray)
   }
 
+  //This returns the Doughnut Chart Data with given labels, data and array of background color
   createDoughnutChartDataWith = (labels, data, backgroundColor) => {
     return {
       labels: labels,
@@ -635,7 +657,7 @@ class Dashboard extends React.Component {
   }
 
 
-
+  //This returns the doughnut chart data
   getDoughnutChartData = (canvas) => {
 
     if (typeof this.state.dashboard_data.staffDistributionByCompany !== 'undefined') {
@@ -645,9 +667,9 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
-
+        //This returns the company Names
         let labels = staffDistributionByCompany.map(entry => entry.companyName)
-
+        //This returns the total number of distinct staff for each company
         let data = staffDistributionByCompany.map(entry => entry.totalNumberOfDistinctStaff)
 
         let backgroundColor = this.generateRandomColorArray(data.length)
@@ -656,7 +678,9 @@ class Dashboard extends React.Component {
 
       } else {
 
-        let labelCompanyNames = staffDistributionByCompany.reduce((names, entry) => {
+        //This returns the company names for a specific project and have at least one staff working on the site
+        let labelCompanyNames = staffDistributionByCompany
+        .reduce((names, entry) => {
           if (entry.staffDistributionByProject
             .filter(subEntry => subEntry.projectID === projectSelected)
             .filter(subEntry => subEntry.numberOfStaff > 0)
@@ -667,6 +691,7 @@ class Dashboard extends React.Component {
           return names;
         }, []);
 
+        //This returns number of staff for the selected project for each company with atleast one employee on site
         let dataForCompanyNames = staffDistributionByCompany
           .map(entry => entry.staffDistributionByProject
             .filter(subEntry => subEntry.projectID === projectSelected)
@@ -686,6 +711,7 @@ class Dashboard extends React.Component {
     return this.getPlaceHolderDoughnutData()
   }
 
+  //This method returns the total number of hours worked by all companies
   getTotalNumberOfHoursWorkedByAllCompanies = () => {
 
     if (typeof this.state.dashboard_data.numberOfHoursByCompany !== 'undefined') {
@@ -694,22 +720,23 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
-        //This is for every project there is
+        //This returns the total number of hours spent by all companies spent on all site
         let totalNumberOfHours = numberOfHoursByCompany
           .map(subEntry => subEntry.companyTimeData)
+          //Converting two dimensional array into a single one
           .reduce((prev, next) => {
             if (prev !== null && next !== null) {
               return prev.concat(next)
             }
             return prev
           }, [])
+          //This returns the sum of number of hours in all entries
           .reduce((acc, entry) => acc + entry.numberOfHours, 0)
 
         return totalNumberOfHours.toFixed(2);
 
       } else {
-        //This is just for that one project
-
+        //This returns the total number of hours by company for a specific project
         let totalNumberOfHours = numberOfHoursByCompany
           .filter(entry => entry.companyTimeData !== null && entry.projectID === projectSelected)
           .map(subEntry => subEntry.companyTimeData)
@@ -729,6 +756,7 @@ class Dashboard extends React.Component {
 
   }
 
+  //This returns the placeholder bar chart data 
   getPlaceHolderBarChartData = (canvas) => {
     let ctx = canvas.getContext("2d");
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
@@ -753,6 +781,7 @@ class Dashboard extends React.Component {
     };
   }
 
+  //This creates bar chart data with canvas, data and labels
   createBarChartWith = (canvas, data, labels) => {
 
     let ctx = canvas.getContext("2d");
@@ -779,7 +808,7 @@ class Dashboard extends React.Component {
 
   }
 
-
+  //This method returns the data for bar chart and is called from the React component.
   getBarChartData = (canvas) => {
 
     if (typeof this.state.dashboard_data.numberOfHoursByCompany !== 'undefined') {
@@ -788,7 +817,7 @@ class Dashboard extends React.Component {
       let projectSelected = this.state.projectSelected
 
       if (projectSelected === 'all') {
-        //All projects are selected.
+        //This returns the company time data for all projects
         let hoursDistributionOnSite = numberOfHoursByCompany
           .map(subEntry => subEntry.companyTimeData)
           .reduce((prev, next) => {
@@ -802,22 +831,25 @@ class Dashboard extends React.Component {
         let labels = []
 
         hoursDistributionOnSite.forEach(function (entry, index) {
+          //If it is from the same company add, keep adding to the same data entry
           if (labels.includes(entry.companyName)) {
-            //Check if it is the first entry or not
+            //Check if the atleast one entry has been created in data
             if (data.length >= 1) {
               data[data.length - 1] += entry.numberOfHours
             }
           } else {
+            //Labels have companyName and data has number of hours
             labels.push(entry.companyName)
             data.push(entry.numberOfHours)
           }
         })
-
-        //Data and labels have been retrieved.
+        
+        //Create bar chart data with canvas, data and labels
         return this.createBarChartWith(canvas, data, labels)
 
       } else {
-        //Specific project Selected. 
+
+        //Filter the data for the specific project 
         let hoursDistributionOnSite = numberOfHoursByCompany
           .filter(entry => entry.projectID === projectSelected)
           .map(subEntry => subEntry.companyTimeData)
@@ -831,35 +863,31 @@ class Dashboard extends React.Component {
         let data = []
         let labels = []
 
+        
         hoursDistributionOnSite.forEach(function (entry, index) {
+          //If it is from the same company add, keep adding to the same data entry
           if (labels.includes(entry.companyName)) {
-            //Check if it is the first entry or not
             if (data.length >= 1) {
               data[data.length - 1] += entry.numberOfHours
             }
           } else {
+            //Labels have companyName and data has number of hours
             labels.push(entry.companyName)
             data.push(entry.numberOfHours)
           }
         })
 
-        //Data and labels have been retrieved.
+        //Create bar chart data with canvas, data and labels
         return this.createBarChartWith(canvas, data, labels)
 
       }
-
     }
-
     return this.getPlaceHolderBarChartData(canvas)
 
   }
-
-
-
-
-
+  
   componentDidMount() {
-    //Get the data from up above
+    //Get the data from the rest API
     axios.get('https://sitefreq-admin-interface.azurewebsites.net/api/dashboard_endpoint?code=cn4aTW8t4vp5657hV7M318umPV0ggNsCRyaAAW66v0LTz8qxVkxBFg%3D%3D',
       {
         params: {
@@ -872,8 +900,9 @@ class Dashboard extends React.Component {
         this.setIsLoading(false)
       }).catch(error => {
         this.setIsLoading(false)
+        //Bring in an alert to show the failed message
         this.basicAlert("Could not retrieve data from the server. Please try again later")
-        //Bring in to show the failed message
+        
         console.log(error)
       });
   }
