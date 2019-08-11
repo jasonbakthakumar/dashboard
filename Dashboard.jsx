@@ -163,7 +163,7 @@ class Dashboard extends React.Component {
   
   This generates the data for the Initial Line Chart
   Parameters => clockedInPersonnel Object and projectSelected
-  Returns => Array of with numberOnSite for each day
+  Returns => Array with numberOnSite for each day
   */
   generateDataForClockedInPersonnelLineChart = (clockedInPersonnel, projectSelected) => {
     return clockedInPersonnel
