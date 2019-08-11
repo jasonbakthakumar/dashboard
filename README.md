@@ -53,8 +53,47 @@ The schema of the response from the endpoint looks like this :
                 numberOfPeopleRead: Int
             } //Returns null if no SSSP data is present
         }
+    ],
+    numberOfPeopleOnSiteData: [
+        {
+            projectID: String,
+            today: Int,
+            yesterday: Int
+        }
+    ],
+    numberOfEntitiesData : [
+        {
+            projectID: String,
+            entityData: {
+                numberOfSubcontractors: Int,
+                numberOfClients: Int,
+                numberOfConsultants: Int
+            }
+        }
+    ],
+    staffDistributionByCompany:[
+        {
+            companyName: String,
+            companyID: String,
+            totalNumberOfDistinctStaff: Int
+            staffDistributionByProject : [
+                numberOfStaff: Int,
+                projectID: String
+            ]
+        }
+    ],
+    numberOfHoursByCompany: [
+        {
+            projectID: String,
+            companyTimeData: [
+                {
+                    companyID: String,
+                    companyName: String,
+                    companyType: String,
+                    numberOfHours: Int
+                }
+            ] // Returns null if no company data is present for a project
+        }
     ]
-    
-
 }
 ```
