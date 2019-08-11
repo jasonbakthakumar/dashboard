@@ -124,13 +124,13 @@ class Dashboard extends React.Component {
 
   getProjectList = () => {
 
-    var listOfOptions = [{
+    let listOfOptions = [{
       value: 'all',
       label: "All Projects",
       isDisabled: false
     }]
 
-    var listOfProjects = [];
+    let listOfProjects = [];
     listOfProjects = this.state.dashboard_data.listOfProjects;
 
     //Checks if the network request is complete and dashboard_data is valid
@@ -151,8 +151,8 @@ class Dashboard extends React.Component {
   generateLabelsForClockedInPersonnelLineChart = (clockedInPersonnel) => {
     return clockedInPersonnel
       .map(function (entry) {
-        var month = entry.date.slice(5, 7)
-        var day = entry.date.slice(8, 10)
+        let month = entry.date.slice(5, 7)
+        let day = entry.date.slice(8, 10)
         return day + '-' + month
       });
   }
@@ -177,7 +177,7 @@ class Dashboard extends React.Component {
             }, 0);
           } else {
             //This is for a specific project - Filter it for that project
-            var specificProjectData = entry.clockedInPersonnel.filter(function (entry) {
+            let specificProjectData = entry.clockedInPersonnel.filter(function (entry) {
               return entry.projectID === projectSelected;
             });
             //Check if the project does not have any entries
@@ -759,7 +759,7 @@ class Dashboard extends React.Component {
   //This returns the placeholder bar chart data 
   getPlaceHolderBarChartData = (canvas) => {
     let ctx = canvas.getContext("2d");
-    var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+    let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, "rgba(255,173,66,0.3)");
     gradientStroke.addColorStop(0, "rgba(255,123,0,0)"); //blue colors
@@ -785,7 +785,7 @@ class Dashboard extends React.Component {
   createBarChartWith = (canvas, data, labels) => {
 
     let ctx = canvas.getContext("2d");
-    var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+    let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, "rgba(255,173,66,0.3)");
     gradientStroke.addColorStop(0, "rgba(255,123,0,0)"); //orange
