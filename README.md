@@ -13,7 +13,7 @@ The parameters for the endpoint are:
 
 The schema of the response from the endpoint looks like this :
 
-`
+```
 {
     listOfProjects : [
         {
@@ -57,4 +57,4 @@ The schema of the response from the endpoint looks like this :
     
 
 }
-`
+```
